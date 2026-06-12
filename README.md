@@ -12,6 +12,29 @@ Design a solution that helps individuals understand, track, and reduce their car
 
 CarbonWise directly addresses this by giving users a clear monthly footprint estimate, showing which parts of their lifestyle contribute the most, and recommending realistic actions based on their own highest-impact categories.
 
+## Chosen Vertical
+
+**Carbon Footprint Awareness Platform**
+
+The solution is designed around an individual climate-awareness persona: a student, professional, or household member who wants to understand their everyday emissions but needs the information to be simple, personal, and action-oriented.
+
+## Approach and Logic
+
+CarbonWise behaves like a lightweight personal sustainability assistant. It does not simply show a static checklist; it reads the user's context from their monthly habits, calculates emissions by category, identifies the highest-impact area, and ranks recommendations based on that context.
+
+The logic follows four steps:
+
+1. Collect practical lifestyle inputs that a normal user can estimate.
+2. Sanitize and clamp the values to keep calculations stable.
+3. Convert each category into monthly CO2e using named emission factors.
+4. Generate insights and actions from the user's largest emission categories.
+
+## How the Solution Works
+
+The app runs fully in the browser. Users enter approximate monthly values for travel, electricity, fuel, diet, shopping, and waste. The calculation module converts those values into category-level emissions, then the UI displays totals, charts, target progress, and personalized actions.
+
+No login or backend is required. The user's latest inputs are saved only in the browser through `localStorage`.
+
 ## Core User Flow
 
 1. A user enters monthly lifestyle data across transport, home energy, food, shopping, and waste.
@@ -123,16 +146,16 @@ The interface includes accessibility-focused structure and controls.
 
 ```text
 carbon-footprint/
-├── index.html              # Semantic app shell
-├── styles.css              # Responsive visual design
-├── app.js                  # Browser UI and state management
-├── carbon.js               # Pure footprint logic
-├── tests/
-│   └── carbon.test.js      # Node-based logic tests
-├── server.mjs              # Minimal static server
-├── Dockerfile              # Cloud Run container
-├── .dockerignore           # Clean deployment context
-└── package.json            # Scripts and metadata
+|-- index.html              # Semantic app shell
+|-- styles.css              # Responsive visual design
+|-- app.js                  # Browser UI and state management
+|-- carbon.js               # Pure footprint logic
+|-- tests/
+|   `-- carbon.test.js      # Node-based logic tests
+|-- server.mjs              # Minimal static server
+|-- Dockerfile              # Cloud Run container
+|-- .dockerignore           # Clean deployment context
+`-- package.json            # Scripts and metadata
 ```
 
 ## Step-by-Step Build Plan
@@ -175,6 +198,14 @@ Cloud Run is a good fit because the app is containerized, lightweight, public, a
 The included factors are simplified estimates for awareness and educational comparison. They are not a certified greenhouse-gas inventory.
 
 A production version should use verified regional datasets, document factor sources in detail, and show uncertainty ranges where possible.
+
+## Assumptions
+
+- The app is intended for personal awareness, not official carbon accounting.
+- Monthly inputs are approximate because most users do not know exact lifestyle emissions.
+- A 2 t CO2e yearly target is used as a simple motivational benchmark.
+- Emission factors are simplified so the product remains understandable for a hackathon submission.
+- Local browser storage is enough for this version because the challenge focuses on awareness and personalized insight, not account management.
 
 ## Future Improvements
 
