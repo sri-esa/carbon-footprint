@@ -1,0 +1,17 @@
+{
+  "name": "carbon-footprint-awareness-platform",
+  "version": "1.0.0",
+  "description": "A dependency-free web app that helps individuals understand, track, and reduce their carbon footprint.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node tests/carbon.test.js"
+  },
+  "keywords": [
+    "carbon-footprint",
+    "sustainability",
+    "promptwars"
+  ],
+  "author": "",
+  "license": "MIT"
+}

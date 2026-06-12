@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carbon Footprint Awareness Platform</title>
+    <meta
+      name="description"
+      content="Track your monthly carbon footprint and get simple personalized actions to reduce emissions."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#calculator">Skip to calculator</a>
+
+    <header class="app-header">
+      <nav class="nav" aria-label="Main navigation">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">C</span>
+          <span>CarbonWise</span>
+        </div>
+        <div class="nav-links">
+          <a href="#calculator">Calculator</a>
+          <a href="#insights">Insights</a>
+          <a href="#actions">Actions</a>
+        </div>
+      </nav>
+
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Personal climate dashboard</p>
+          <h1 id="hero-title">Carbon Footprint Awareness Platform</h1>
+          <p>
+            Understand your monthly emissions, spot your biggest impact areas,
+            and choose realistic actions that fit your lifestyle.
+          </p>
+        </div>
+        <div class="hero-panel" aria-label="Current footprint summary">
+          <span class="panel-label">Estimated footprint</span>
+          <strong id="heroTotal">0.00 t</strong>
+          <span>CO2e per year</span>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="layout-band" id="calculator">
+        <div class="section-heading">
+          <p class="eyebrow">Track</p>
+          <h2>Monthly lifestyle inputs</h2>
+          <p>Enter approximate monthly habits. Your data stays in this browser.</p>
+        </div>
+
+        <form class="calculator-grid" id="footprintForm">
+          <fieldset>
+            <legend>Transport</legend>
+            <label for="carKm">Car travel per month, in km</label>
+            <input id="carKm" name="carKm" type="number" min="0" max="10000" step="1" value="300">
+
+            <label for="busKm">Bus or metro travel per month, in km</label>
+            <input id="busKm" name="busKm" type="number" min="0" max="10000" step="1" value="120">
+
+            <label for="flightHours">Flight time per month, in hours</label>
+            <input id="flightHours" name="flightHours" type="number" min="0" max="100" step="0.5" value="0">
+          </fieldset>
+
+          <fieldset>
+            <legend>Home energy</legend>
+            <label for="electricityKwh">Electricity use per month, in kWh</label>
+            <input id="electricityKwh" name="electricityKwh" type="number" min="0" max="5000" step="1" value="180">
+
+            <label for="renewablePercent">Renewable electricity share</label>
+            <input id="renewablePercent" name="renewablePercent" type="range" min="0" max="100" step="5" value="20">
+            <output for="renewablePercent" id="renewableOutput">20%</output>
+
+            <label for="lpgKg">Cooking gas or LPG per month, in kg</label>
+            <input id="lpgKg" name="lpgKg" type="number" min="0" max="300" step="1" value="12">
+          </fieldset>
+
+          <fieldset>
+            <legend>Food and consumption</legend>
+            <label for="dietType">Typical diet pattern</label>
+            <select id="dietType" name="dietType">
+              <option value="mixed">Mixed diet</option>
+              <option value="lowMeat">Low meat</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="vegan">Vegan</option>
+            </select>
+
+            <label for="shoppingSpend">New goods shopping per month, in INR</label>
+            <input id="shoppingSpend" name="shoppingSpend" type="number" min="0" max="500000" step="100" value="5000">
+
+            <label for="wasteKg">Unsegregated waste per month, in kg</label>
+            <input id="wasteKg" name="wasteKg" type="number" min="0" max="500" step="1" value="20">
+          </fieldset>
+
+          <div class="form-actions">
+            <button type="submit">Update footprint</button>
+            <button type="button" class="secondary" id="resetButton">Reset</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="dashboard" id="insights" aria-live="polite">
+        <div class="section-heading">
+          <p class="eyebrow">Understand</p>
+          <h2>Personalized insights</h2>
+          <p>See what drives your footprint and how your yearly total compares with a lower-impact goal.</p>
+        </div>
+
+        <div class="metrics">
+          <article class="metric">
+            <span>Monthly footprint</span>
+            <strong id="monthlyTotal">0 kg</strong>
+            <small>CO2e this month</small>
+          </article>
+          <article class="metric">
+            <span>Yearly estimate</span>
+            <strong id="yearlyTotal">0 t</strong>
+            <small>CO2e per year</small>
+          </article>
+          <article class="metric">
+            <span>Main driver</span>
+            <strong id="topCategory">Transport</strong>
+            <small id="topCategoryDetail">Your largest category</small>
+          </article>
+        </div>
+
+        <div class="insight-grid">
+          <article class="breakdown">
+            <h3>Category breakdown</h3>
+            <div id="barChart" class="bar-chart" role="img" aria-label="Carbon footprint category breakdown"></div>
+          </article>
+          <article class="goal">
+            <h3>Reduction target</h3>
+            <div class="progress-shell" aria-hidden="true">
+              <div class="progress-fill" id="goalProgress"></div>
+            </div>
+            <p id="goalText">Set your inputs to see a reduction path.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="layout-band" id="actions">
+        <div class="section-heading">
+          <p class="eyebrow">Reduce</p>
+          <h2>Recommended simple actions</h2>
+          <p>Actions are ranked by your highest-emission categories.</p>
+        </div>
+        <div class="action-list" id="actionList"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Built for Google PromptWars: awareness, tracking, and practical carbon reduction.</p>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
