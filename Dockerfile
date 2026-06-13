@@ -3,7 +3,7 @@ FROM node:22-alpine
 WORKDIR /app
 
 COPY package.json ./
-COPY index.html styles.css app.js carbon.js storage.js server.mjs ./
+COPY index.html styles.css app.js carbon.js emission-model.js recommendation-model.js storage.js server.mjs ./
 
 ENV NODE_ENV=production
 ENV PORT=8080

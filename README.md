@@ -66,9 +66,13 @@ The project is intentionally small, readable, and modular.
 - `styles.css` contains all visual and responsive styling.
 - `app.js` handles UI state, rendering, local persistence, and events.
 - `carbon.js` contains pure calculation, sanitization, recommendation, and target logic.
+- `emission-model.js` stores input defaults, limits, labels, and emission factors.
+- `recommendation-model.js` stores category-specific action copy.
 - `storage.js` isolates browser persistence and stored-data validation.
 - `tests/` validates calculation, storage, and server behavior.
 - `server.mjs` serves static files with minimal production headers.
+- `SECURITY.md` documents the threat model and security controls.
+- `docs/ARCHITECTURE.md` explains the module boundaries and data flow.
 
 The carbon calculation logic is separated from the UI, making the app easier to test, review, and extend. Emission factors are named constants instead of unexplained magic numbers. Browser storage and HTTP serving are also separated into small modules so each responsibility has clear ownership.
 
@@ -98,7 +102,8 @@ The project follows safe practices for a static personal tracking app.
 - Only known public static files are served.
 - The static server blocks path traversal by checking resolved paths.
 - Malformed encoded paths return a controlled `400 Bad Request`.
-- The server adds a strict Content Security Policy, `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `Permissions-Policy`, and `Cross-Origin-Opener-Policy`.
+- Oversized URLs return `414 URI Too Long`.
+- The server adds a strict Content Security Policy, `Strict-Transport-Security`, `X-Frame-Options`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`, and `Cross-Origin-Resource-Policy`.
 - The Docker image runs only the static Node server needed for the app.
 
 ### Efficiency: Medium Impact
@@ -131,7 +136,9 @@ Current tests cover:
 - Security headers on served pages
 - Rejection of unsupported HTTP methods
 - Blocking non-public files
+- Public JavaScript module allowlist behavior
 - `HEAD` request behavior
+- Malformed and oversized URL handling
 
 Run tests with:
 
@@ -161,6 +168,8 @@ carbon-footprint/
 |-- styles.css              # Responsive visual design
 |-- app.js                  # Browser UI and state management
 |-- carbon.js               # Pure footprint logic
+|-- emission-model.js       # Defaults, labels, limits, and factors
+|-- recommendation-model.js # Category recommendation text
 |-- storage.js              # Browser persistence helpers
 |-- tests/
 |   |-- carbon.test.js      # Carbon calculation tests
@@ -169,6 +178,9 @@ carbon-footprint/
 |-- server.mjs              # Minimal static server
 |-- Dockerfile              # Cloud Run container
 |-- .dockerignore           # Clean deployment context
+|-- SECURITY.md             # Security posture and controls
+|-- docs/
+|   `-- ARCHITECTURE.md     # Architecture notes
 `-- package.json            # Scripts and metadata
 ```
 

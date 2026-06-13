@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 
 const PORT = Number(process.env.PORT) || 4173;
 const ROOT = resolve(".");
+const MAX_URL_LENGTH = 2048;
 const ALLOWED_METHODS = new Set(["GET", "HEAD"]);
 const PUBLIC_FILES = new Set([
   "/",
@@ -12,6 +13,8 @@ const PUBLIC_FILES = new Set([
   "/styles.css",
   "/app.js",
   "/carbon.js",
+  "/emission-model.js",
+  "/recommendation-model.js",
   "/storage.js"
 ]);
 
@@ -37,8 +40,11 @@ export const SECURITY_HEADERS = Object.freeze({
     "form-action 'self'"
   ].join("; "),
   "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Resource-Policy": "same-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
   "Referrer-Policy": "no-referrer",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+  "X-Frame-Options": "DENY",
   "X-Content-Type-Options": "nosniff"
 });
 
@@ -46,12 +52,17 @@ export function createStaticServer({ root = ROOT } = {}) {
   const staticRoot = resolve(root);
 
   return createServer((request, response) => {
+    if (!request.url || request.url.length > MAX_URL_LENGTH) {
+      send(response, 414, "URI too long");
+      return;
+    }
+
     if (!ALLOWED_METHODS.has(request.method)) {
       send(response, 405, "Method not allowed", { Allow: "GET, HEAD" }, request.method);
       return;
     }
 
-    const url = new URL(request.url || "/", `http://${request.headers.host}`);
+    const url = new URL(request.url, "http://localhost");
     const pathname = safeDecodePath(url.pathname);
 
     if (!pathname) {
