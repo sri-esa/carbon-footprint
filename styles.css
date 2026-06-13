@@ -354,43 +354,85 @@ button.secondary {
   text-align: right;
 }
 
-.bar-track,
-.progress-shell {
+.bar-track {
   height: 0.78rem;
   background: #e8eee9;
   border-radius: 999px;
   overflow: hidden;
 }
 
-.bar-fill,
-.progress-fill {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  transition: width 160ms ease;
+.bar-progress,
+.goal-progress {
+  width: 100%;
+  height: 0.78rem;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: #e8eee9;
+  overflow: hidden;
 }
 
-.transport {
+.bar-progress::-webkit-progress-bar,
+.goal-progress::-webkit-progress-bar {
+  background: #e8eee9;
+  border-radius: inherit;
+}
+
+.bar-progress::-webkit-progress-value,
+.goal-progress::-webkit-progress-value {
+  border-radius: inherit;
+}
+
+.bar-progress::-moz-progress-bar,
+.goal-progress::-moz-progress-bar {
+  border-radius: inherit;
+}
+
+.transport::-webkit-progress-value {
   background: var(--blue);
 }
 
-.energy {
+.transport::-moz-progress-bar {
+  background: var(--blue);
+}
+
+.energy::-webkit-progress-value {
   background: var(--gold);
 }
 
-.food {
+.energy::-moz-progress-bar {
+  background: var(--gold);
+}
+
+.food::-webkit-progress-value {
   background: var(--green);
 }
 
-.consumption {
+.food::-moz-progress-bar {
+  background: var(--green);
+}
+
+.consumption::-webkit-progress-value {
   background: var(--teal);
 }
 
-.waste {
+.consumption::-moz-progress-bar {
+  background: var(--teal);
+}
+
+.waste::-webkit-progress-value {
   background: var(--red);
 }
 
-.progress-fill {
+.waste::-moz-progress-bar {
+  background: var(--red);
+}
+
+.goal-progress::-webkit-progress-value {
+  background: var(--green);
+}
+
+.goal-progress::-moz-progress-bar {
   background: var(--green);
 }
 

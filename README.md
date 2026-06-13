@@ -66,10 +66,11 @@ The project is intentionally small, readable, and modular.
 - `styles.css` contains all visual and responsive styling.
 - `app.js` handles UI state, rendering, local persistence, and events.
 - `carbon.js` contains pure calculation, sanitization, recommendation, and target logic.
-- `tests/carbon.test.js` validates the core logic.
+- `storage.js` isolates browser persistence and stored-data validation.
+- `tests/` validates calculation, storage, and server behavior.
 - `server.mjs` serves static files with minimal production headers.
 
-The carbon calculation logic is separated from the UI, making the app easier to test, review, and extend. Emission factors are named constants instead of unexplained magic numbers.
+The carbon calculation logic is separated from the UI, making the app easier to test, review, and extend. Emission factors are named constants instead of unexplained magic numbers. Browser storage and HTTP serving are also separated into small modules so each responsibility has clear ownership.
 
 ### Problem Statement Alignment: High Impact
 
@@ -92,8 +93,12 @@ The project follows safe practices for a static personal tracking app.
 - Numeric inputs are clamped to reasonable minimum and maximum values.
 - Select values are validated against known diet options.
 - UI rendering uses DOM APIs and `textContent`, avoiding raw HTML injection.
+- Dynamic charts use native `progress` elements instead of inline style mutation.
+- The server only allows `GET` and `HEAD` requests.
+- Only known public static files are served.
 - The static server blocks path traversal by checking resolved paths.
-- The server adds `X-Content-Type-Options: nosniff` and `Referrer-Policy: no-referrer`.
+- Malformed encoded paths return a controlled `400 Bad Request`.
+- The server adds a strict Content Security Policy, `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `Permissions-Policy`, and `Cross-Origin-Opener-Policy`.
 - The Docker image runs only the static Node server needed for the app.
 
 ### Efficiency: Medium Impact
@@ -121,6 +126,12 @@ Current tests cover:
 - Lower-carbon diet comparison
 - Recommendation ordering
 - Reduction target logic
+- Corrupt or malformed stored browser data
+- Storage save, load, and clear behavior
+- Security headers on served pages
+- Rejection of unsupported HTTP methods
+- Blocking non-public files
+- `HEAD` request behavior
 
 Run tests with:
 
@@ -150,8 +161,11 @@ carbon-footprint/
 |-- styles.css              # Responsive visual design
 |-- app.js                  # Browser UI and state management
 |-- carbon.js               # Pure footprint logic
+|-- storage.js              # Browser persistence helpers
 |-- tests/
-|   `-- carbon.test.js      # Node-based logic tests
+|   |-- carbon.test.js      # Carbon calculation tests
+|   |-- storage.test.js     # Persistence and sanitization tests
+|   `-- server.test.js      # Static server security tests
 |-- server.mjs              # Minimal static server
 |-- Dockerfile              # Cloud Run container
 |-- .dockerignore           # Clean deployment context

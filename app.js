@@ -5,8 +5,7 @@ import {
   calculateFootprint,
   estimateReductionGap
 } from "./carbon.js";
-
-const STORAGE_KEY = "carbonwise.inputs.v1";
+import { clearInputs, loadInputs, saveInputs } from "./storage.js";
 
 const form = document.querySelector("#footprintForm");
 const resetButton = document.querySelector("#resetButton");
@@ -43,7 +42,7 @@ function initialize() {
   });
 
   resetButton.addEventListener("click", () => {
-    localStorage.removeItem(STORAGE_KEY);
+    clearInputs();
     fillForm(DEFAULT_INPUTS);
     render(calculateFootprint(DEFAULT_INPUTS));
   });
@@ -67,19 +66,6 @@ function fillForm(inputs) {
 
 function readForm() {
   return Object.fromEntries(new FormData(form).entries());
-}
-
-function loadInputs() {
-  try {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return stored && typeof stored === "object" ? stored : DEFAULT_INPUTS;
-  } catch {
-    return DEFAULT_INPUTS;
-  }
-}
-
-function saveInputs(inputs) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(inputs));
 }
 
 function render(result) {
@@ -108,14 +94,16 @@ function renderBars(result) {
       const track = document.createElement("div");
       track.className = "bar-track";
 
-      const fill = document.createElement("div");
-      fill.className = `bar-fill ${category}`;
-      fill.style.width = `${Math.max((kg / maxValue) * 100, 2)}%`;
+      const progress = document.createElement("progress");
+      progress.className = `bar-progress ${category}`;
+      progress.max = maxValue;
+      progress.value = kg;
+      progress.textContent = `${formatter.format(kg)} kg`;
 
       const value = document.createElement("strong");
       value.textContent = `${formatter.format(kg)} kg`;
 
-      track.append(fill);
+      track.append(progress);
       row.append(label, track, value);
       return row;
     })
@@ -124,7 +112,8 @@ function renderBars(result) {
 
 function renderGoal(result) {
   const gap = estimateReductionGap(result.yearlyTotalTonnes);
-  goalProgress.style.width = `${gap.progress}%`;
+  goalProgress.value = gap.progress;
+  goalProgress.textContent = `${gap.progress}%`;
 
   if (gap.isWithinTarget) {
     goalText.textContent = `You are within the ${gap.targetTonnes} t yearly target. Keep tracking and protect the habits that work.`;
